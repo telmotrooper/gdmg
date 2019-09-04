@@ -1,9 +1,14 @@
 #!/usr/bin/env python3
 
-import os
+import os, subprocess
 
 os.system("./extractgst.sh")
 os.system("cp wallpaper.* theme")
+
+wallpaper_filename = subprocess.check_output(
+  "ls -l | grep wallpaper | awk '{print $9}'",
+  shell=True, stderr=subprocess.STDOUT).decode().rstrip()
+
 
 os.system(f"""echo '<?xml version="1.0" encoding="UTF-8"?>
 <gresources>
@@ -24,7 +29,7 @@ os.system(f"""echo '<?xml version="1.0" encoding="UTF-8"?>
     <file>key-shift.svg</file>
     <file>key-shift-uppercase.svg</file>
     <file>noise-texture.png</file>
-    <file>filename</file>
+    <file>{wallpaper_filename}</file>
     <file>no-events.svg</file>
     <file>no-notifications.svg</file>
     <file>pad-osd.css</file>
