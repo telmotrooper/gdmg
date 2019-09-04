@@ -3,7 +3,7 @@
 
 #!/bin/sh
 gst=/usr/share/gnome-shell/gnome-shell-theme.gresource
-workdir=${HOME}/shell-theme
+workdir=./
 
 for r in `gresource list $gst`; do
 	r=${r#\/org\/gnome\/shell/}
