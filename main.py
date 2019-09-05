@@ -1,15 +1,25 @@
 #!/usr/bin/env python3
 
 import os, re, subprocess
+from print_logo import print_logo
 
+print_logo()
+
+print("Extracting GNOME Shell Theme...")
 os.system("./extractgst.sh")
-os.system("cp wallpaper.* theme")
 
 wallpaper_filename = subprocess.check_output(
-  "ls -l | grep wallpaper | awk '{print $9}'",
+  "ls -l | grep '.jpg\|.png' | awk '{print $9}'",
   shell=True, stderr=subprocess.STDOUT).decode().rstrip()
 
-# Write "gnome-shell-theme.gresource.xml"
+print(f'"{wallpaper_filename}" found in current folder.')
+
+print(f'Copying "{wallpaper_filename}"" to theme folder...')
+os.system(f"cp {wallpaper_filename} theme")
+
+
+print('Writing "gnome-shell-theme.gresource.xml" file...')
+
 os.system(f"""echo '<?xml version="1.0" encoding="UTF-8"?>
 <gresources>
   <gresource prefix="/org/gnome/shell/theme">
@@ -42,9 +52,11 @@ os.system(f"""echo '<?xml version="1.0" encoding="UTF-8"?>
 </gresources>' > theme/gnome-shell-theme.gresource.xml
 """)
 
+
 with open("theme/gnome-shell.css", "r") as file:
   filedata = file.read()
 
+print('Editing "gnome-shell.css" file...')
 # Replace the definition of #lockDialogGroup with an empty string
 new_file = re.sub(r'(?s)(#lockDialogGroup {(?<={)(.*?)(?=})})', "", filedata)
 
@@ -58,15 +70,20 @@ new_file += """#lockDialogGroup {
 with open("theme/gnome-shell.css", "w") as file:
   file.write(new_file)
 
-displays_found = subprocess.check_output(
+xrandr_output = subprocess.check_output(
     "xrandr | grep '*\| connected'",
-    shell=True, stderr=subprocess.STDOUT).decode().rstrip()
+    shell=True, stderr=subprocess.STDOUT).decode()
 
-print(displays_found)
+# xrandr_output = xrandr_output.splitlines()
 
-os.system("convert -background none \
-\( wallpaper.jpg -resize 1920x1080! \) \
-\( wallpaper.jpg -resize 1440x900! \) +append theme/wallpaper.jpg")
+# if len(xrandr_output) % 2: # output is pair, so we have both display name and resolution for each display
+
+# for line in xrandr_output:
+  
+
+os.system(f"convert -background none \
+\( {wallpaper_filename} -resize 1920x1080! \) \
+\( {wallpaper_filename} -resize 1440x900! \) +append theme/wallpaper.jpg")
 
 os.system("cd theme && glib-compile-resources gnome-shell-theme.gresource.xml")
 os.system("sudo mv theme/gnome-shell-theme.gresource /usr/share/gnome-shell/")
