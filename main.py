@@ -62,7 +62,7 @@ print(f'Editing {green("gnome-shell.css")} file...')
 new_file = re.sub(r'(?s)(#lockDialogGroup {(?<={)(.*?)(?=})})', "", filedata)
 
 # TODO: Revemo direct reference to "wallpaper.jpg", file might have another name
-new_file += """#lockDialogGroup \{
+new_file += """#lockDialogGroup {
   background: #2e3436 url(%s) !important;
   background-size: cover !important;
   background-repeat: no-repeat !important;
