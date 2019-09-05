@@ -58,9 +58,15 @@ new_file += """#lockDialogGroup {
 with open("theme/gnome-shell.css", "w") as file:
   file.write(new_file)
 
-  os.system("convert -background none \
-  wallpaper.jpg \
-  \( wallpaper.jpg -resize 1440x900! \) +append theme/wallpaper.jpg")
+displays_found = subprocess.check_output(
+    "xrandr | grep '*\| connected'",
+    shell=True, stderr=subprocess.STDOUT).decode().rstrip()
+
+print(displays_found)
+
+os.system("convert -background none \
+wallpaper.jpg \
+\( wallpaper.jpg -resize 1440x900! \) +append theme/wallpaper.jpg")
 
 os.system("cd theme && glib-compile-resources gnome-shell-theme.gresource.xml")
 os.system("sudo mv theme/gnome-shell-theme.gresource /usr/share/gnome-shell/")
