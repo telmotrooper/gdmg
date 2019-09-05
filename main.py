@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-import os, subprocess
+import os, re, subprocess
 
 os.system("./extractgst.sh")
 os.system("cp wallpaper.* theme")
@@ -9,7 +9,7 @@ wallpaper_filename = subprocess.check_output(
   "ls -l | grep wallpaper | awk '{print $9}'",
   shell=True, stderr=subprocess.STDOUT).decode().rstrip()
 
-
+# Write "gnome-shell-theme.gresource.xml"
 os.system(f"""echo '<?xml version="1.0" encoding="UTF-8"?>
 <gresources>
   <gresource prefix="/org/gnome/shell/theme">
@@ -41,3 +41,19 @@ os.system(f"""echo '<?xml version="1.0" encoding="UTF-8"?>
   </gresource>
 </gresources>' > theme/gnome-shell-theme.gresource.xml
 """)
+
+with open("theme/gnome-shell.css", "r") as file:
+  filedata = file.read()
+
+# Replace the definition of #lockDialogGroup with an empty string
+new_file = re.sub(r'(?s)(#lockDialogGroup {(?<={)(.*?)(?=})})', "", filedata)
+
+# TODO: Revemo direct reference to "wallpaper.jpg", file might have another name
+new_file += """#lockDialogGroup {
+  background: #2e3436 url(wallpaper.jpg) !important;
+  background-size: cover !important;
+  background-repeat: no-repeat !important;
+}"""
+
+with open("theme/gnome-shell.css", "w") as file:
+  file.write(new_file)
