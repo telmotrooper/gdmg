@@ -65,7 +65,7 @@ displays_found = subprocess.check_output(
 print(displays_found)
 
 os.system("convert -background none \
-wallpaper.jpg \
+\( wallpaper.jpg -resize 1920x1080! \) \
 \( wallpaper.jpg -resize 1440x900! \) +append theme/wallpaper.jpg")
 
 os.system("cd theme && glib-compile-resources gnome-shell-theme.gresource.xml")
