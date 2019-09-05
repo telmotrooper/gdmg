@@ -15,10 +15,6 @@ wallpaper_filename = subprocess.check_output(
 
 print(f"{green(wallpaper_filename)} found in current folder.")
 
-print(f"Copying {green(wallpaper_filename)} to theme folder...")
-os.system(f"cp {wallpaper_filename} theme")
-
-
 print(f"Writing {green('gnome-shell-theme.gresource.xml')} file...")
 
 os.system(f"""echo '<?xml version="1.0" encoding="UTF-8"?>
@@ -84,7 +80,7 @@ xrandr_output = subprocess.check_output(
 print("Processing wallpaper for setup with two displays...")
 os.system(f"convert -background none \
 \( {wallpaper_filename} -resize 1920x1080! \) \
-\( {wallpaper_filename} -resize 1440x900! \) +append theme/wallpaper.jpg")
+\( {wallpaper_filename} -resize 1440x900! \) +append theme/{wallpaper_filename}")
 
 os.system("cd theme && glib-compile-resources gnome-shell-theme.gresource.xml")
 
