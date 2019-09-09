@@ -9,6 +9,23 @@ print_logo()
 print(f"Extracting {cyan('GNOME Shell Theme')}...")
 os.system("./extractgst.sh")
 
+while(True):
+  print(f"Downloading random wallpaper from {yellow('https://picsum.photos')}...\n")
+  curl = subprocess.Popen(
+    "curl -L -o wallpaper_from_the_web.jpg https://picsum.photos/1920/1080",
+    shell=True, stderr=None)
+
+  curl.wait()
+
+  os.system("xdg-open ./wallpaper_from_the_web.jpg")
+
+  keep_image = input("\nDid you like this wallpaper? (Y/n) ")
+
+  if(keep_image.lower() == "y" or keep_image.lower() == ""):
+    break
+  else:
+    print("Okay, we'll download another one!")
+
 wallpaper_filename = subprocess.check_output(
   "ls -l | grep '.jpg\|.png' | awk '{print $9}'",
   shell=True, stderr=subprocess.STDOUT).decode().rstrip()
@@ -57,7 +74,7 @@ print(f'Editing {green("gnome-shell.css")} file...')
 # Replace the definition of #lockDialogGroup with an empty string
 new_file = re.sub(r'(?s)(#lockDialogGroup {(?<={)(.*?)(?=})})', "", filedata)
 
-# TODO: Revemo direct reference to "wallpaper.jpg", file might have another name
+# TODO: Remove direct reference to "wallpaper.jpg", file might have another name
 new_file += """#lockDialogGroup {
   background: #2e3436 url(%s) !important;
   background-size: cover !important;
